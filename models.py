@@ -97,6 +97,7 @@ class SalGAN:
         generated_img.save(GENERATED_IMG_DIR, format="PNG")
         return GENERATED_IMG_DIR
 
+
 class TranSalNetModel:
     def __init__(self, script_path: str):
         self.to_tensor = ToTensor()

@@ -15,7 +15,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content_Type"
 
-
+# Don't change this one
 @app.route("/", methods=["GET"])
 @cross_origin()
 def index():
@@ -48,7 +48,8 @@ def salgan_method():
 
 transalnet = TranSalNetModel(os.getenv("TRANSALNET_WEIGHT_DIR"))
 
-@app.route("/transalnet", methods = "POST")
+
+@app.route("/transalnet", methods=["POST"])
 @cross_origin()
 def transalnet_handler():
     if request.method == "POST":
@@ -57,15 +58,13 @@ def transalnet_handler():
         else:
             image = request.files["image"]
             image = Image.open(image)
-            image = transalnet.predict(image, cuda = False)
+            image = transalnet.predict(image, cuda=False)
             image_io = BytesIO()
             image.save(image_io, "PNG")
             image_io.seek(0)
-            return send_file(image_io, minetype = "image/png")
+            return send_file(image_io, mimetype="image/png")
     else:
-        return {"msg": "Unsupported method", code: 400}
-
-            
+        return {"msg": "Unsupported method", "code": 400}
 
 
 if __name__ == "__main__":
