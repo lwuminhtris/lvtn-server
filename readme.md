@@ -1,5 +1,5 @@
 # LVTN Server
-## How to use
+## How To Use
 Quickstart as below instructions:
 - Upload your model weights (ie `h5` file) to `weights` folder then set the directory in `.env` file. 
 
