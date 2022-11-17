@@ -1,2 +1,4 @@
-weights/salgan-generator-1.h5
+weights/*
+!weights/keep_weights_folder.txt
 __pycache__
+.vscode

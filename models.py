@@ -8,6 +8,9 @@ import numpy as np
 from keras.utils import load_img, img_to_array, array_to_img
 import math
 
+from torch.jit import load as load_script
+from torchvision.transforms import ToTensor, ToPILImage
+
 load_dotenv()
 
 SALGAN_WEIGHT_DIR = os.getenv("SALGAN_WEIGHT_DIR")
@@ -93,3 +96,26 @@ class SalGAN:
         GENERATED_IMG_DIR = os.path.join(RESULT_FOLDER, "result.png")
         generated_img.save(GENERATED_IMG_DIR, format="PNG")
         return GENERATED_IMG_DIR
+
+
+class TranSalNetModel:
+    def __init__(self, script_path: str):
+        self.to_tensor = ToTensor()
+        self.to_pil_image = ToPILImage()
+        self.script = load_script(script_path)
+
+    def predict(self, image, cuda: bool = False):
+        image = image.convert("RGB")
+        x = self.to_tensor(image)
+
+        if cuda:
+            self.script.cuda()
+            x = x.cuda()
+
+        pred = self.script(x)
+        pred = pred.detach()
+        if cuda:
+            pred = pred.cpu()
+
+        pred = self.to_pil_image(pred)
+        return pred
