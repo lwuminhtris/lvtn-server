@@ -14,6 +14,12 @@ cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content_Type"
 
 
+@app.route("/", methods=["GET"])
+@cross_origin()
+def index():
+    return "<h1>SERVER IS RUNNING</h1>"
+
+
 @app.route("/resize", methods=["POST"])
 @cross_origin()
 def resize_method():
@@ -36,3 +42,7 @@ def salgan_method():
     path = os.path.join(UPLOAD_FOLDER, "resized_img.png")
     GENERATED_IMG_DIR = SalGAN(path).gen()
     return send_file(GENERATED_IMG_DIR, mimetype="image/png")
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=3000)
