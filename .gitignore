@@ -1,4 +1,8 @@
 weights/*
 !weights/keep_weights_folder.txt
+images/*
+!images/keep_images_folder.txt
+results/*
+!results/keep_results_folder.txt
 __pycache__
 .vscode
