@@ -22,26 +22,26 @@ def index():
     return "<h1>SERVER IS RUNNING</h1>"
 
 
-@app.route("/resize", methods=["POST"])
+@app.route("/save", methods=["POST"])
 @cross_origin()
-def resize_method():
-    if request.method == "POST":
-        if "image" not in request.files:
-            return {"msg": "Your request is missing image field", "code": 400}
-        else:
-            f = request.files["image"]
-            name = secure_filename(f.filename)
-            path = os.path.join(UPLOAD_FOLDER, name)
-            f.save(path)
-            resize(path, save=True)
-            resized_path = os.path.join(UPLOAD_FOLDER, "resized_img.png")
-            return send_file(resized_path, mimetype="image/png")
+def save_handler():
+    if "image" not in request.files:
+        return {"msg": "Your request is missing image field", "code": 400}
+    else:
+        f = request.files["image"]
+        # -> Save Image
+        path = os.path.join(UPLOAD_FOLDER, secure_filename("original.png"))
+        f.save(path)
+
+        # -> Save Resized Image
+        resize(path, save=True)
+        return {"msg": "Image saved and resized successfully", "code": 200}
 
 
 @app.route("/salgan", methods=["GET"])
 @cross_origin()
-def salgan_method():
-    path = os.path.join(UPLOAD_FOLDER, "resized_img.png")
+def salgan_handler():
+    path = os.path.join(UPLOAD_FOLDER, "resized.png")
     GENERATED_IMG_DIR = SalGAN(path).gen()
     return send_file(GENERATED_IMG_DIR, mimetype="image/png")
 
