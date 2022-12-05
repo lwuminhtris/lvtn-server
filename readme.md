@@ -32,3 +32,10 @@ Client->Server: Send image
 Server: Generate prediction
 Server->Client: Send prediction
 ```
+
+`[POST]: /msinet`
+```sequence
+Client->Server: Send image
+Server: Generate prediction
+Server->Client: Send prediction
+```
