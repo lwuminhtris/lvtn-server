@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from flask import Flask, request, send_file
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
-from models import SalGAN, resize, TranSalNetModel
+from models import SalGAN, TranSalNetModel, MSINetModel
+from utils import resize
 from PIL import Image
 from io import BytesIO
 
@@ -47,6 +48,7 @@ def salgan_handler():
 
 
 transalnet = TranSalNetModel(os.getenv("TRANSALNET_WEIGHT_DIR"))
+msinet = MSINetModel(os.getenv("MSINET_WEIGHT_DIR"))
 
 
 @app.route("/transalnet", methods=["POST"])
@@ -59,6 +61,24 @@ def transalnet_handler():
             image = request.files["image"]
             image = Image.open(image)
             image = transalnet.predict(image, cuda=False)
+            image_io = BytesIO()
+            image.save(image_io, "PNG")
+            image_io.seek(0)
+            return send_file(image_io, mimetype="image/png")
+    else:
+        return {"msg": "Unsupported method", "code": 400}
+
+
+@app.route("/msinet", methods=["POST"])
+@cross_origin()
+def msinet_handler():
+    if request.method == "POST":
+        if "image" not in request.files:
+            return {"msg": "Your request is missing image field", "code": 400}
+        else:
+            image = request.files["image"]
+            image = Image.open(image)
+            image = msinet.predict(image, cuda=False)
             image_io = BytesIO()
             image.save(image_io, "PNG")
             image_io.seek(0)
