@@ -12,6 +12,7 @@ from utils import resize, load_resized_img
 
 from torch.jit import load as load_script
 from torchvision.transforms import ToTensor, ToPILImage
+from PIL import Image, ImageFilter
 
 load_dotenv()
 

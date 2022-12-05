@@ -5,7 +5,7 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from models import SalGAN, TranSalNetModel, MSINetModel
 from utils import resize
-from PIL import Image
+from PIL import Image, ImageFilter
 from io import BytesIO
 
 load_dotenv()
@@ -44,6 +44,9 @@ def save_handler():
 def salgan_handler():
     path = os.path.join(UPLOAD_FOLDER, "resized.png")
     GENERATED_IMG_DIR = SalGAN(path).gen()
+    im1 = Image.open(GENERATED_IMG_DIR)
+    im2 = im1.filter(ImageFilter.GaussianBlur(radius=15))
+    im2.save(GENERATED_IMG_DIR)
     return send_file(GENERATED_IMG_DIR, mimetype="image/png")
 
 
